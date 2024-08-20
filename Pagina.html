@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionários</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div id="Cadastrar-Funcionarios">
+        
+        <h1>Adicionar Funcionário</h1>
+        
+        <hr>
+
+        <div>
+            <label for="nome">Nome:</label>
+            <input id="nome" type="text">
+        </div>
+        
+        <div>
+            <label for="data_nascimento">Data de Nascimento:</label>
+            <input id="data_nascimento" type="date">
+        </div>
+
+        <button onclick="adicionarFuncionario()">Adicionar</button>
+
+    </div>
+    <div id="Funcionários">
+        <div id="funcionarios-container"></div>
+    </div>
+    
+    <script src="Script.js"></script>
+</body>
+</html>
