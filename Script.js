@@ -45,6 +45,7 @@ function adicionarFuncionario(){
     
     //Ordenar e atualizar
     funcionarios.sort((a, b) => a.dias_aniversario - b.dias_aniversario);
+    localStorage.setItem("funcionarios",JSON.stringify(funcionarios));
     carregarFuncionarios();
 
 }
@@ -69,9 +70,9 @@ function carregarFuncionarios() {
         linhaDivisoria = document.createElement('hr');
         Conts.insertBefore(linhaDivisoria, container);
     }
-
-    for (let i = 0; i < funcionarios.length; i++) {
-        var funcionario = funcionarios[i];
+    var funcionari = JSON.parse(localStorage.getItem('funcionarios')) || [];
+    for (let i = 0; i < funcionari.length; i++) {
+        var funcionario = funcionari[i];
         
         // Criação do elemento de título para o nome do funcionário
         var titulo = document.createElement('h4');
@@ -129,6 +130,7 @@ function faltanTantosDias(dataNascimento){
 window.onload = function() {
     editarFuncionario();
     funcionarios.sort((a, b) => a.dias_aniversario - b.dias_aniversario);
+    localStorage.setItem("funcionarios",JSON.stringify(funcionarios));
     carregarFuncionarios();
     
 };
