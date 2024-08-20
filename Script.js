@@ -14,10 +14,19 @@ var funcionarios = JSON.parse(localStorage.getItem("funcionarios")) || [
     }
 ];
 
+function criarDataSemFusoHorario(dataString) {
+    var partes = dataString.split('-');
+    var ano = parseInt(partes[0], 10);
+    var mes = parseInt(partes[1], 10) - 1;
+    var dia = parseInt(partes[2], 10);
+    
+    return new Date(ano, mes, dia);
+}
+
 // Atualiza os dados de idade e dias até o aniversário
 function editarFuncionario() {
     for (let i = 0; i < funcionarios.length; i++) {
-        var data = new Date(funcionarios[i].data_de_nascimento);
+        var data = criarDataSemFusoHorario(funcionarios[i].data_de_nascimento);
         funcionarios[i] = { 
             "nome": funcionarios[i].nome, 
             "data_de_nascimento": funcionarios[i].data_de_nascimento, 
@@ -31,7 +40,7 @@ function editarFuncionario() {
 function adicionarFuncionario() {
     var nome = document.getElementById('nome').value;
     var dt_Nascimento = document.getElementById('data_nascimento').value;
-    var data = new Date(dt_Nascimento);
+    var data = criarDataSemFusoHorario(dt_Nascimento);
     
     var novoFunc = {
         "nome": nome, 
@@ -76,10 +85,10 @@ function carregarFuncionarios() {
         titulo.textContent = funcionario.nome; 
         
         var dataNascimento = document.createElement('p');
-        var data = new Date(funcionario.data_de_nascimento);
-        var dia = String(data.getDate()).padStart(2, '0');
-        var mes = String(data.getMonth() + 1).padStart(2, '0');
-        var ano = data.getFullYear();
+        var data = criarDataSemFusoHorario(funcionario.data_de_nascimento);
+        var dia = String(data.getUTCDate()).padStart(2, '0');
+        var mes = String(data.getUTCMonth() + 1).padStart(2, '0');
+        var ano = data.getUTCFullYear();
         
         dataNascimento.textContent = `${dia}/${mes}/${ano} - (${funcionario.idade} anos - faltam ${funcionario.dias_aniversario} dias para o aniversário)`;
 
