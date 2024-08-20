@@ -1,4 +1,5 @@
-var funcionarios = [
+// Recupera os funcionários do localStorage ou inicializa com uma lista padrão
+var funcionarios = JSON.parse(localStorage.getItem("funcionarios")) || [
     {   
         "nome": "Gervásio Duarte",
         "data_de_nascimento": "1970-01-12"
@@ -13,50 +14,48 @@ var funcionarios = [
     }
 ];
 
+// Atualiza os dados de idade e dias até o aniversário
 function editarFuncionario() {
     for (let i = 0; i < funcionarios.length; i++) {
         var data = new Date(funcionarios[i].data_de_nascimento);
         funcionarios[i] = { 
-            "nome":funcionarios[i].nome, 
-            "data_de_nascimento":funcionarios[i].data_de_nascimento, 
+            "nome": funcionarios[i].nome, 
+            "data_de_nascimento": funcionarios[i].data_de_nascimento, 
             "idade": calcularIdade(data),
-            "dias_aniversario":faltanTantosDias(data)};
+            "dias_aniversario": faltanTantosDias(data)
+        };
     }
 }
 
-function adicionarFuncionario(){
+// Adiciona um novo funcionário
+function adicionarFuncionario() {
     var nome = document.getElementById('nome').value;
     var dt_Nascimento = document.getElementById('data_nascimento').value;
     var data = new Date(dt_Nascimento);
     
     var novoFunc = {
-        "nome":nome, 
-        "data_de_nascimento":dt_Nascimento, 
+        "nome": nome, 
+        "data_de_nascimento": dt_Nascimento, 
         "idade": calcularIdade(data),
-        "dias_aniversario":faltanTantosDias(data)
+        "dias_aniversario": faltanTantosDias(data)
     };
     
-    //Adicionar
-    funcionarios.push(novoFunc);
+    adicionarNoLocalStorage(novoFunc);
 
-    // Limpar os campos após adicionar
     document.getElementById('nome').value = '';
     document.getElementById('data_nascimento').value = '';
     
-    //Ordenar e atualizar
+    funcionarios.push(novoFunc);
     funcionarios.sort((a, b) => a.dias_aniversario - b.dias_aniversario);
-    localStorage.setItem("funcionarios",JSON.stringify(funcionarios));
     carregarFuncionarios();
-
 }
 
-
+// Exibe os funcionários na tela
 function carregarFuncionarios() {
     var Conts = document.getElementById('Funcionários'); 
     var container = document.getElementById('funcionarios-container');
     container.innerHTML = '';
 
-    // Cria e adiciona o título "Funcionários" apenas se ele ainda não estiver presente
     var Fun = document.querySelector('#Funcionários h1');
     if (!Fun) {
         Fun = document.createElement('h1');
@@ -64,31 +63,26 @@ function carregarFuncionarios() {
         Conts.insertBefore(Fun, container);
     }
 
-    // Cria e adiciona a linha divisória apenas se ela ainda não estiver presente
     var linhaDivisoria = document.querySelector('#Funcionários hr');
     if (!linhaDivisoria) {
         linhaDivisoria = document.createElement('hr');
         Conts.insertBefore(linhaDivisoria, container);
     }
-    var funcionari = JSON.parse(localStorage.getItem('funcionarios')) || [];
-    for (let i = 0; i < funcionari.length; i++) {
-        var funcionario = funcionari[i];
+
+    for (let i = 0; i < funcionarios.length; i++) {
+        var funcionario = funcionarios[i];
         
-        // Criação do elemento de título para o nome do funcionário
         var titulo = document.createElement('h4');
         titulo.textContent = funcionario.nome; 
         
-        // Criação do elemento de parágrafo para data de nascimento
         var dataNascimento = document.createElement('p');
         var data = new Date(funcionario.data_de_nascimento);
         var dia = String(data.getDate()).padStart(2, '0');
         var mes = String(data.getMonth() + 1).padStart(2, '0');
         var ano = data.getFullYear();
         
-        // Define o texto no formato dia/mês/ano
         dataNascimento.textContent = `${dia}/${mes}/${ano} - (${funcionario.idade} anos - faltam ${funcionario.dias_aniversario} dias para o aniversário)`;
 
-        // Adiciona os elementos ao contêiner
         container.appendChild(titulo);
         container.appendChild(dataNascimento);
     }
@@ -100,37 +94,51 @@ function carregarFuncionarios() {
     }
 }
 
+// Calcula a idade do funcionário
 function calcularIdade(dataNascimento) {
     var hoje = new Date();
     var idade = hoje.getFullYear() - dataNascimento.getFullYear();
     var mes = hoje.getMonth() - dataNascimento.getMonth();
-    // Verifica se o aniversário já passou este ano
+    
     if (mes < 0 || (mes === 0 && hoje.getDate() < dataNascimento.getDate())) {
         idade--;
     }
     return idade;
 }
-function faltanTantosDias(dataNascimento){
+
+// Calcula quantos dias faltam para o próximo aniversário
+function faltanTantosDias(dataNascimento) {
     var hoje = new Date();
     var proximoAniversario = new Date(hoje.getFullYear(), dataNascimento.getMonth(), dataNascimento.getDate());
 
-    // Se o aniversário já passou neste ano, calcula para o próximo ano
     if (hoje > proximoAniversario) {
         proximoAniversario.setFullYear(hoje.getFullYear() + 1);
     }
 
-    // Calcula a diferença em milissegundos e converte para dias
     var diferença = proximoAniversario - hoje;
-    var diasFaltando = Math.ceil(diferença / (1000 * 60 * 60 * 24)); // Converte milissegundos para dias
+    var diasFaltando = Math.ceil(diferença / (1000 * 60 * 60 * 24)); 
 
     return diasFaltando;
 }
 
+// Adiciona um novo funcionário ao localStorage, evitando duplicações
+function adicionarNoLocalStorage(novoFuncionario) {
+    var funcionariosExistentes = JSON.parse(localStorage.getItem("funcionarios")) || [];
+    var funcionarioExistente = funcionariosExistentes.some(func => func.nome === novoFuncionario.nome);
+    
+    if (!funcionarioExistente) {
+        funcionariosExistentes.push(novoFuncionario);
+        localStorage.setItem("funcionarios", JSON.stringify(funcionariosExistentes));
+    } 
+}
 
 window.onload = function() {
+    // Atualiza os dados dos funcionários existentes
     editarFuncionario();
-    funcionarios.sort((a, b) => a.dias_aniversario - b.dias_aniversario);
-    localStorage.setItem("funcionarios",JSON.stringify(funcionarios));
-    carregarFuncionarios();
     
+    // Ordena os funcionários por proximidade do aniversário
+    funcionarios.sort((a, b) => a.dias_aniversario - b.dias_aniversario);
+
+    // Carrega os funcionários para a interface
+    carregarFuncionarios();
 };
