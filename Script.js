@@ -120,7 +120,7 @@ function carregarFuncionarios() {
     }
 
     // Seleciona o segundo <hr> dentro do contêiner
-    var linhaDivisoria2 = document.querySelector('ultimo-hr');
+    var linhaDivisoria2 = document.getElementById('ultimo-hr');
 
     if (!linhaDivisoria2) {
         // Adiciona um <hr> extra para o último funcionário
