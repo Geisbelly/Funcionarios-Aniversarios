@@ -1,23 +1,37 @@
+// Declaração global da lista de funcionários
+var funcionarios = [];
+
 // Recupera os funcionários do localStorage ou inicializa com uma lista padrão
-var funcionarios = JSON.parse(localStorage.getItem("funcionarios")) || [
-    {   
-        "nome": "Gervásio Duarte",
-        "data_de_nascimento": "1970-01-12"
-    },
-    {
-        "nome": "Irene Chaves",
-        "data_de_nascimento": "1992-03-20"
-    },
-    {
-        "nome": "Maria Antonia",
-        "data_de_nascimento": "2004-01-10"
+function inicializarFuncionarios() {
+    var funcionariosDoLocalStorage = JSON.parse(localStorage.getItem("funcionarios"));
+
+    // Se não houver dados no localStorage, inicialize com a lista padrão
+    if (!funcionariosDoLocalStorage) {
+        funcionariosDoLocalStorage = [
+            {   
+                "nome": "Gervásio Duarte",
+                "data_de_nascimento": "1970-01-12"
+            },
+            {
+                "nome": "Irene Chaves",
+                "data_de_nascimento": "1992-03-20"
+            },
+            {
+                "nome": "Maria Antonia",
+                "data_de_nascimento": "2004-01-10"
+            }
+        ];
+
+        localStorage.setItem("funcionarios", JSON.stringify(funcionariosDoLocalStorage));
     }
-];
+
+    return funcionariosDoLocalStorage;
+}
 
 function criarDataSemFusoHorario(dataString) {
     var partes = dataString.split('-');
     var ano = parseInt(partes[0], 10);
-    var mes = parseInt(partes[1], 10) - 1;
+    var mes = parseInt(partes[1], 10) - 1; // Meses são 0-indexados
     var dia = parseInt(partes[2], 10);
     
     return new Date(ano, mes, dia);
@@ -142,9 +156,12 @@ function adicionarNoLocalStorage(novoFuncionario) {
 }
 
 window.onload = function() {
+    // Inicializa a lista Json
+    funcionarios = inicializarFuncionarios();
+
     // Atualiza os dados dos funcionários existentes
     editarFuncionario();
-    
+
     // Ordena os funcionários por proximidade do aniversário
     funcionarios.sort((a, b) => a.dias_aniversario - b.dias_aniversario);
 
