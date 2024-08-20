@@ -82,7 +82,7 @@ function carregarFuncionarios() {
     var Fun = document.querySelector('#Funcionários h1');
     if (!Fun) {
         Fun = document.createElement('h1');
-        Fun.textContent = 'Funcionários';
+        Fun.textContent = 'Lista de Funcionarios';
         Conts.insertBefore(Fun, container);
     }
 
@@ -108,12 +108,25 @@ function carregarFuncionarios() {
 
         container.appendChild(titulo);
         container.appendChild(dataNascimento);
+
+        // Cria o elemento <hr>
+        let hrElement = document.createElement('hr');
+
+        // Define o id para o elemento
+        hrElement.id = 'meu-hr';
+
+        // Adiciona o elemento ao container
+        container.appendChild(hrElement);
     }
 
-    var linhaDivisoria2 = document.querySelector('#Funcionários hr:nth-of-type(2)');
+    // Seleciona o segundo <hr> dentro do contêiner
+    var linhaDivisoria2 = document.querySelector('ultimo-hr');
+
     if (!linhaDivisoria2) {
-        linhaDivisoria2 = document.createElement('hr');
-        Conts.appendChild(linhaDivisoria2);
+        // Adiciona um <hr> extra para o último funcionário
+        var linhaDivisoriaFinal = document.createElement('hr');
+        linhaDivisoriaFinal.id = 'ultimo-hr';
+        Conts.appendChild(linhaDivisoriaFinal);
     }
 }
 
